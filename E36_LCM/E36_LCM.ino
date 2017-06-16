@@ -1,4 +1,3 @@
-int light;
 String command;
 
 void setup() {  
@@ -20,14 +19,21 @@ void setup() {
   
   delay(5000);
 
-  check();
+  Serial.print("Light: ");
+  Serial.print(analogRead(0)/1023);
+  Serial.print("% (");
+  Serial.print(analogRead(0));
+  Serial.println(")");
+  
+  if ( analogRead(0) < 10 ){
+    digitalWrite(4,LOW);
+    digitalWrite(5,LOW);
+    digitalWrite(6,LOW);
+    digitalWrite(7,LOW);
+  }
 }
 
 void loop() {
-  // If driving for more than 10 minutes check light intensity again.
-  if ( (millis() % 600000) == 0)
-    check();
-    
   if ( Serial.available() > 0){
     command = Serial.readString();
     if ( command == "lights on" || command == "1" ){
@@ -45,17 +51,12 @@ void loop() {
       digitalWrite(7, HIGH);
     }
   }
+  check();
+  delay(1000);
 }
 
 void check(){
-  light = analogRead(0);
-  Serial.print("Light: ");
-  Serial.print(light/1023);
-  Serial.print("% (");
-  Serial.print(light);
-  Serial.println(")");
-  
-  if ( light < 10 ){
+  if ( analogRead(0) < 10 ){
     digitalWrite(4,LOW);
     digitalWrite(5,LOW);
     digitalWrite(6,LOW);
